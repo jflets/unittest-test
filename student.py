@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import requests
 
 
 class Student:
@@ -24,3 +25,12 @@ class Student:
 
     def alert_santa(self):
         self.naughty_list = True
+
+    def course_schedule(self):
+        response = requests.get(
+            f"https://company.com/course-scheule/{self._last_name}/{self._first_name}")
+
+        if response.ok:
+            return response.text
+        else:
+            return "Something went wrong"

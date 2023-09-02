@@ -1,6 +1,7 @@
 import unittest
 from student import Student
 from datetime import timedelta
+from unittest.mock import patch
 
 
 class TestStudent(unittest.TestCase):
@@ -40,6 +41,21 @@ class TestStudent(unittest.TestCase):
 
         self.assertEqual(self.student.end_date,
                          old_end_date + timedelta(days=5))
+
+    def test_course_schedule_successful(self):
+        with patch("student.requests.get") as mock_get:
+            mock_get.return_value.ok = True
+            mock_get.return_value.text = "Success"
+
+            scheduled = self.student.course_schedule()
+            self.assertTrue(scheduled, "Course schedule is successful")
+
+    def test_course_schedule_failure(self):
+        with patch("student.requests.get") as mock_get:
+            mock_get.return_value.ok = False
+
+            scheduled = self.student.course_schedule()
+            self.assertEqual(scheduled, "Something went wrong")
 
 
 if __name__ == '__main__':
